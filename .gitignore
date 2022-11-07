@@ -1,0 +1,9 @@
+.vscode/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+_deps/
+cmake_install.cmake
+home_alarm
+test
+

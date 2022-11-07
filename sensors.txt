@@ -1,0 +1,23 @@
+389d2   Motion Sensor
+
+f500c   Back Door
+f500d   Front Door
+f769d   Garage Door
+
+f76a5	Front Bedroom LHS
+f789b   Front Bedroom RHS
+
+f500f   Back Bedroom RHS
+f76a3   Back Bedroom LHS
+
+f51f6   Dining Room LHS
+f500a   Dining Room RHS
+
+f719b   Kitchen RHS
+f51e8   Kitchen Middle
+f76a8   Kitchen LHS
+
+f76a6   Master Bedroom RHS
+f7198   Master Bedroom LHS
+f4b0e   Master Bathroom
+
