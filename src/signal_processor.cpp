@@ -9,7 +9,7 @@
 
 using namespace std ;
 
-constexpr float MinLevel = 350 ;   // Carrier noise level
+constexpr float MinLevel = 150 ;   // Carrier noise level
 
 template <class T> void LogData( T *data, size_t len ) ;
 
@@ -33,6 +33,7 @@ SignalProcessor::SignalProcessor( const int sampleFrequency ) :
 
 void SignalProcessor::processRawBytes( unsigned char *buf, uint32_t len ) {
 
+    // cout << "Process " << len << " raw bytes\n" ;
     const int numSamples = len >> 1 ;
     uint16_t signal[ numSamples ] ;
 
@@ -44,9 +45,10 @@ void SignalProcessor::processRawBytes( unsigned char *buf, uint32_t len ) {
     for( int i=0 ; i<numSamples ; i++ ) {
         int16_t x = 127 - *p++ ;
         int16_t y = 127 - *p++ ;
-        *s = x * x + y * y; 
+        *s = x * x + y * y ; 
         sum += *s++ ;
     }
+
     float baseLine = (float)sum / len ;
     if( baseLine < MinLevel ) {   // just noise in the received IQ data ?
         if( bitLength == 0 ) {
@@ -106,7 +108,7 @@ void SignalProcessor::processRawBytes( unsigned char *buf, uint32_t len ) {
                         if( bitLength>longPulseLength ) bits[bitIndex++] = '-' ;
 
                         if( bitIndex > 1020 ) { // way too many bits w/o pause
-                            cerr << "Confused signal - too many bits\n" ;
+                            // cerr << "Confused signal - too many bits\n" ;
                             reset() ;
                         }
 
@@ -141,7 +143,7 @@ void SignalProcessor::processRawBytes( unsigned char *buf, uint32_t len ) {
                         if( dspState==LOW && bitLength>longPulseLength ) bits[bitIndex++] = '_' ;
 
                         if( bitIndex > 1020 ) { // way too many bits w/o pause
-                            cerr << "Confused signal - too many bits\n" ;
+                            // cerr << "Confused signal - too many bits\n" ;
                             reset() ;
                         }
 
@@ -178,8 +180,11 @@ void SignalProcessor::reset() {
 template <class T>
 void LogData( T *data, size_t len ) {
     ofstream dataFile( "signal.csv" ) ;
-    for( int i=0 ; i<len ; i++ ) 
-        dataFile << (int)( *data++ ) << "\n" ;
+    for( int i=0 ; i<len ; i++ ) {
+        if( (i & 31) == 0 ) dataFile << "\n"  << setw(8) <<  hex << uppercase << i << ":  " ;
+        dataFile << hex << uppercase << (int)( *data++ ) << " " ;
+    }
+    dataFile << "---------------------------------------------\n" ;
     dataFile.flush() ;
     dataFile.close() ;
 }

@@ -1,11 +1,12 @@
 
 #pragma once 
 
+#include <cstdint>
 #include <iostream>
 
 typedef struct SensorEvent {
-    uint8_t channel    ;
-    uint32_t device_id ;
+    std::uint8_t channel    ;
+    std::uint32_t device_id ;
 
     bool contact     ;
     bool tamper      ;

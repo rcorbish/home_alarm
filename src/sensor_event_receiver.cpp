@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "sensor_event_receiver.hpp"
+#include <string.h>
 
 using namespace std ;
 
@@ -18,54 +19,52 @@ SensorEventProcessor::SensorEventProcessor() {
                 string device_id_name( line.begin(), line.begin()+i ) ;
                 stringstream ss( device_id_name ) ;
                 ss << hex ;
-                int device_id ;
+                int device_id ;                
                 ss >> device_id ;
+
+                while( isspace( line[i] ) ) { 
+                    i++ ;
+                }
+                char device_type = line[i] ;
+                while( !isspace( line[i] ) ) { 
+                    i++ ;
+                }
+
                 while( isspace( line[i] ) ) { 
                     i++ ;
                 }
                 string device_name( line.begin()+i, line.end() ) ;
-                sensors.emplace( device_id, device_name ) ;
+                sensors.emplace( piecewise_construct,
+                                 forward_as_tuple(device_id), 
+                                 forward_as_tuple(device_name, device_type) ) ;
                 break ;
             }
         }
-
     }
-    
 }
 
-void SensorEventProcessor::receive( const SensorEvent &event ) {
-    
+void SensorEventProcessor::receive( const SensorEvent &event ) {    
     auto stateItem = sensors.find( event.device_id ) ;
     if( stateItem != sensors.end() ) {
         SensorState &state = stateItem->second ;
-        state.lastEvent =  time( nullptr ) ;
-
-        bool changed = ( state.active != ( event.reed==1 ) ) ;
-        changed |= state.low_battery != event.battery_low ;
-        changed |= state.tamper != event.tamper ;
-
-        if( changed ) {
-            state.active = ( event.reed == 1 ) ;
-            state.low_battery = event.battery_low ;
-            state.tamper = event.tamper ;
-
-            // cout << state << "\n" ;
-            for( auto i : sensors ) {
-                cout << i.second << "\n" ;
-            }
-            cout << endl ;
+        state.active = state.device_type=='C' ? event.contact : event.reed ;
+        if( state.active ) {
+            state.lastEvent =  time( nullptr ) ;
         }
+        state.low_battery = event.battery_low ;
+        state.tamper = event.tamper ;
+
+        // cout << state << "\n" ;
+        for( auto i : sensors ) {
+            cout << i.second << "\n" ;
+        }
+        cout << endl ;
     } else {
-        cerr << event << "\n" ;
+//        cerr << event << "\n" ;
     }
 }
 
-
 std::ostream & operator << ( std::ostream &s, const SensorState &state ) {
-    std::tm *now = localtime( &state.lastEvent ) ;
-
-    char buf[80];
-    strftime(buf, sizeof(buf), "%Y-%m-%d %X", now ) ;
 
     int n = state.device_name.size() ;
     n = ( n >= 28 ) ? 0 : ( 28 - n ) ;
@@ -73,10 +72,19 @@ std::ostream & operator << ( std::ostream &s, const SensorState &state ) {
     s << state.device_name ; 
     for( int i=0 ; i<n ; i++ )  s << " " ;
 
-    s << buf
-    << " State: " << state.active
-    << " Lo-Batt " << state.low_battery
-    << " Tamper " << state.tamper
-    ;
+    char buf[80] ;
+    if( state.lastEvent == 0 ) {
+        s << "                   " ;
+    } else {
+        std::tm *now = localtime( &state.lastEvent ) ;
+        strftime(buf, sizeof(buf), "%Y-%m-%d %X", now ) ;
+        s << buf ;
+    }
+
+    s << " State: " << state.active
+      << " Lo-Batt " << state.low_battery
+      << " Tamper " << state.tamper
+      ;
+
     return s ;    
 }

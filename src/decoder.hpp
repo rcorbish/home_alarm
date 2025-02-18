@@ -25,6 +25,7 @@ class Decoder {
 
     protected:
         uint16_t crc16( const uint8_t *message, const int nBytes, uint16_t polynomial ) ;
+        uint8_t mapBitsToNumber( const char *bits, const int offset ) const ;
 
     public:
         Decoder() {} ; 

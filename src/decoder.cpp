@@ -3,11 +3,23 @@
 #include <libusb-1.0/libusb.h>
 #include <cstring>
 #include <iomanip>
+#include <map>
 
 #include "decoder.hpp"
 
 using namespace std ;
 
+uint8_t Decoder::mapBitsToNumber( const char *bits, const int offset ) const {
+    uint8_t value = 0 ;
+    int ix = offset;
+    for( int i=0 ; i<8 ; i++, ix += 2 ) {
+        value <<= 1 ;
+        if( bits[ix] == '_' ) {
+            value |= 1 ;
+        }
+    }
+    return value ;
+}
 
 bool Decoder::parse( char *bits, int len ) {
     if( len < 32 ) 
@@ -23,24 +35,24 @@ bool Decoder::parse( char *bits, int len ) {
         bits[len++] = '_' ;
     }
     if( len >= 128 ) {
-        // if( memcmp( previousBits, bits, 128 ) == 0 ) 
-        //     return true ; 
+        if( memcmp( previousBits, bits, 128 ) == 0 ) 
+            return true ; 
 
         uint8_t data[6] ;
-        data[0] = 0 ;
-        data[1] = 0 ;
-        data[2] = 0 ;
-        data[3] = 0 ;
-        data[4] = 0 ;
-        data[5] = 0 ;
+        data[0] = mapBitsToNumber( bits, 32 ) ;
+        data[1] = mapBitsToNumber( bits, 48 ) ;
+        data[2] = mapBitsToNumber( bits, 64 ) ;
+        data[3] = mapBitsToNumber( bits, 80 ) ;
+        data[4] = mapBitsToNumber( bits, 96 ) ;
+        data[5] = mapBitsToNumber( bits, 112 ) ;
         
-        char *p = bits + 32 ;
-        int byte = 0 ;
-        for( int i=0 ; i<96 ; i+=2 ) {      // get 6 bytes of data to a buffer
-            data[byte] <<= 1 ;
-            if( p[i] == '_' ) data[byte] |= 1 ;
-            if( i==14 || i==30 || i==46 || i==62 || i==78 ) byte++ ;
-        }
+        // char *p = bits + 32 ;
+        // int byte = 0 ;
+        // for( int i=0 ; i<96 ; i+=2 ) {      // get 6 bytes of data to a buffer
+        //     data[byte] <<= 1 ;
+        //     if( p[i] == '_' ) data[byte] |= 1 ;
+        //     if( i==14 || i==30 || i==46 || i==62 || i==78 ) byte++ ;
+        // }
 
         // cout << hex << (uint16_t)data[0] << ' ' << (uint16_t)data[1] << ' ' 
         //         << (uint16_t)data[2] << ' ' << (uint16_t)data[3] << ' ' 

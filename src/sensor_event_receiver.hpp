@@ -12,8 +12,11 @@ typedef struct SensorState {
     bool low_battery ;
     bool tamper ;
     time_t lastEvent ;
-
-    SensorState( const std::string &name ) : device_name(name) {}
+    const char device_type ;
+    SensorState( const std::string &name, const char type ) : 
+                        device_name(name), 
+                        lastEvent(0), 
+                        device_type(type) {} ; 
 } SensorState ;
 
 std::ostream & operator << ( std::ostream &s, const SensorState &state ) ;
