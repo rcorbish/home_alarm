@@ -71,7 +71,7 @@ std::string Sensors::toString() const {
 
 std::ostream & operator << ( std::ostream &s, const SensorState &state ) {
 
-    s << "{ \"name\": \"state.device_name\"," 
+    s << "{ \"name\": \"" << state.device_name <<"\"," 
       << " \"active\": " << state.active
       << " \"low_battery\": " << state.low_battery
       << " \"tamper\": " << state.tamper
