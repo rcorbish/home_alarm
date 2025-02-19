@@ -63,9 +63,16 @@ void Sensors::accept( const SensorEvent &event ) {
 
 std::string Sensors::toString() const {
     stringstream ss ;
+    ss << "{ \"sensors\" : [" ;
+    bool first = true ;
     for( auto i : sensors ) {
-        ss << i.second << "\n" ;
+        if( !first ) {
+            ss << ", " ;
+        }
+        ss << i.second  ;
+        first = false ;
     }
+    ss << "]}" ;
     return ss.str() ;
 }
 
