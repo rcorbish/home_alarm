@@ -41,7 +41,7 @@ find_library(LIBRTLSDR_LIBRARY
   NAMES rtlsdr
   PATH_SUFFIXES "lib64" "lib32" "lib" ) 
 
-add_executable( home_alarm src/main.cpp src/radio.cpp src/signal_processor.cpp src/decoder.cpp src/sensor_event_receiver.cpp src/sensor_event.cpp )
+add_executable( home_alarm src/main.cpp src/radio.cpp src/signal_processor.cpp src/decoder.cpp src/sensors.cpp src/sensor_event.cpp src/listener.cpp)
 target_include_directories( home_alarm PUBLIC ${LIBUSB_INCLUDE_DIR} ${LIBRTLSDR_INCLUDE_DIR} )
 target_link_libraries( home_alarm PRIVATE Threads::Threads )
 target_link_libraries( home_alarm PRIVATE ${LIBUSB_LIBRARY} ${LIBRTLSDR_LIBRARY} )

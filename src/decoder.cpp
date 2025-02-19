@@ -46,18 +46,6 @@ bool Decoder::parse( char *bits, int len ) {
         data[4] = mapBitsToNumber( bits, 96 ) ;
         data[5] = mapBitsToNumber( bits, 112 ) ;
         
-        // char *p = bits + 32 ;
-        // int byte = 0 ;
-        // for( int i=0 ; i<96 ; i+=2 ) {      // get 6 bytes of data to a buffer
-        //     data[byte] <<= 1 ;
-        //     if( p[i] == '_' ) data[byte] |= 1 ;
-        //     if( i==14 || i==30 || i==46 || i==62 || i==78 ) byte++ ;
-        // }
-
-        // cout << hex << (uint16_t)data[0] << ' ' << (uint16_t)data[1] << ' ' 
-        //         << (uint16_t)data[2] << ' ' << (uint16_t)data[3] << ' ' 
-        //         << (uint16_t)data[4] << ' ' << (uint16_t)data[5] << "\n" ;
-
         uint8_t channel    = data[0] >> 4;
         uint32_t device_id = ((data[0] & 0xf) << 16) | (data[1] << 8) | data[2];
         uint16_t crc       = (data[4] << 8) | data[5];
@@ -78,11 +66,10 @@ bool Decoder::parse( char *bits, int len ) {
                 .battery_low = (data[3] & 0x08) != 0 , 
                 .heartbeat   = (data[3] & 0x04) != 0 
             } ;
-            sensorEventProcessor.receive( ev ) ;
+            sensors.accept( ev ) ;
             return true ;
         }
-    // } else {
-    //   cerr << bits << " [" << len << "]\n";
+        // } else { cerr << bits << " [" << len << "]\n"; }
     }
     return false ;
 } 

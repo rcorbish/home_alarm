@@ -21,10 +21,11 @@ typedef struct SensorState {
 
 std::ostream & operator << ( std::ostream &s, const SensorState &state ) ;
 
-class SensorEventProcessor {
+class Sensors {
     private:
-        std::map<uint32_t,SensorState> sensors ;
+        std::map<uint32_t, SensorState> sensors;
     public:
-        SensorEventProcessor() ;
-        void receive( const SensorEvent &event ) ;
-} ;
+        Sensors();
+        void accept(const SensorEvent &event);
+        std::string toString() const ;
+};

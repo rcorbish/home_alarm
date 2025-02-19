@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "sensor_event_receiver.hpp"
+#include "sensors.hpp"
 
 /**
  * @brief Decodes a bit-stream into the Security Device message
@@ -11,7 +11,7 @@
  *   PREAMBLE   = FF FE   16 bit constant
  *   CHANNEL    = C       4 bits
  *   DEVICE     = DDD     12 bits
- *   STATUS     = S       8 bits
+ *   STATUS     = SS      8 bits
  *   CRC        = XXXX    16 bits
  * 
  *  This maintains a state to optimize - previousBits. If this
@@ -21,13 +21,13 @@
 class Decoder {
     private:
         char previousBits[128] ;
-        SensorEventProcessor sensorEventProcessor ;
+        Sensors &sensors ;
 
     protected:
         uint16_t crc16( const uint8_t *message, const int nBytes, uint16_t polynomial ) ;
         uint8_t mapBitsToNumber( const char *bits, const int offset ) const ;
 
     public:
-        Decoder() {} ; 
+        Decoder( Sensors &_sensors ) : sensors(_sensors) {} ; 
         bool parse( char *bits, int len ) ;
 } ;

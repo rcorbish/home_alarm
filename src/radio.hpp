@@ -22,7 +22,7 @@ protected:
     void listen() ;
 
 public:
-    Radio() ;
+    Radio( Sensors &sensors ) ;
     virtual ~Radio() ;
     int start() ;
 

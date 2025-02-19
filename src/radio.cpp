@@ -16,7 +16,7 @@ using namespace std ;
 constexpr int SampleFrequency = 1000000 ;
 constexpr int CarrierFrequency = 345000000; //344940000 ;
 
-Radio::Radio() : threadId(0), rtlsdr_dev(0), dsp( SampleFrequency ) {
+Radio::Radio( Sensors &sensors ) : threadId(0), rtlsdr_dev(0), dsp( SampleFrequency, sensors ) {
     device_count = rtlsdr_get_device_count();
     if (!device_count) {
         throw "No supported devices found" ;

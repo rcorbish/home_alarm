@@ -3,14 +3,17 @@
 #include <signal.h>
 
 #include "radio.hpp"
+#include "listener.hpp"
 
 using namespace std ;
 
 Radio *radio = nullptr ;
+Listener *listener = nullptr ;
 
 void my_handler(int s) {
 	cout << "  Closing radio" << endl ; 
 	delete radio ;
+	delete listener ;
 	exit( 0 ) ;
 }
 
@@ -23,8 +26,13 @@ int main(int argc, char **argv, char **envp)
 	signal( SIGINT, my_handler ) ;
 
 	try {
-		radio = new Radio() ;
+		Sensors sensors ;
+
+		radio = new Radio( sensors ) ;
 		radio->start() ;
+
+		listener = new Listener( sensors ) ;
+		listener->start() ;
 
 		std::cout << (*radio) << std::endl ;
 		while( 1 ) { 

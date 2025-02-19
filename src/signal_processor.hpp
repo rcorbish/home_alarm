@@ -41,6 +41,6 @@ class SignalProcessor {
     protected:
         void reset() ;
     public :
-        SignalProcessor( const int _sampleFrequency ) ;
+        SignalProcessor( const int _sampleFrequency, Sensors &sensors ) ;
         void processRawBytes( unsigned char *buf, uint32_t len ) ;
 } ;

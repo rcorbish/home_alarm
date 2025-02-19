@@ -2,15 +2,15 @@
 #include <ctime>
 #include <sstream>
 #include <fstream>
-
-#include "sensor_event_receiver.hpp"
 #include <string.h>
+
+#include "sensors.hpp"
 
 using namespace std ;
 
 
 
-SensorEventProcessor::SensorEventProcessor() {
+Sensors::Sensors() {
     ifstream sensorNames( "sensors.txt" ) ;
     string line;
     while( getline( sensorNames, line ) ) {
@@ -43,7 +43,7 @@ SensorEventProcessor::SensorEventProcessor() {
     }
 }
 
-void SensorEventProcessor::receive( const SensorEvent &event ) {    
+void Sensors::accept( const SensorEvent &event ) {    
     auto stateItem = sensors.find( event.device_id ) ;
     if( stateItem != sensors.end() ) {
         SensorState &state = stateItem->second ;
@@ -55,13 +55,18 @@ void SensorEventProcessor::receive( const SensorEvent &event ) {
         state.tamper = event.tamper ;
 
         // cout << state << "\n" ;
-        for( auto i : sensors ) {
-            cout << i.second << "\n" ;
-        }
-        cout << endl ;
+        cout << toString() << endl ;
     } else {
 //        cerr << event << "\n" ;
     }
+}
+
+std::string Sensors::toString() const {
+    stringstream ss ;
+    for( auto i : sensors ) {
+        ss << i.second << "\n" ;
+    }
+    return ss.str() ;
 }
 
 std::ostream & operator << ( std::ostream &s, const SensorState &state ) {

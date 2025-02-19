@@ -13,9 +13,10 @@ constexpr float MinLevel = 150 ;   // Carrier noise level
 
 template <class T> void LogData( T *data, size_t len ) ;
 
-SignalProcessor::SignalProcessor( const int sampleFrequency ) : 
+SignalProcessor::SignalProcessor( const int sampleFrequency, Sensors &sensors ) : 
         longPulseLength( sampleFrequency / 6000 ), // uS definition of long pulse
-        gapLength( sampleFrequency / 1000 ) // uS definition of inter envelope gap
+        gapLength( sampleFrequency / 1000 ), // uS definition of inter envelope gap
+        decoder( sensors )
 {   
     noiseBackground = 1000 ;
     maxLow = 750 ;      // max value in low signal = noise
