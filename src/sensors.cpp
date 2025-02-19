@@ -80,9 +80,9 @@ std::ostream & operator << ( std::ostream &s, const SensorState &state ) {
 
     s << "{ \"name\": \"" << state.device_name <<"\"," 
       << " \"active\": " << state.active
-      << " \"low_battery\": " << state.low_battery
-      << " \"tamper\": " << state.tamper
-      << " \"lastEvent\": " << state.lastEvent
+      << ", \"low_battery\": " << state.low_battery
+      << ", \"tamper\": " << state.tamper
+      << ", \"lastEvent\": " << state.lastEvent
       << " }" ;
 
     return s ;    
