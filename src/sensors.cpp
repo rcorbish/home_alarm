@@ -71,25 +71,12 @@ std::string Sensors::toString() const {
 
 std::ostream & operator << ( std::ostream &s, const SensorState &state ) {
 
-    int n = state.device_name.size() ;
-    n = ( n >= 28 ) ? 0 : ( 28 - n ) ;
-
-    s << state.device_name ; 
-    for( int i=0 ; i<n ; i++ )  s << " " ;
-
-    char buf[80] ;
-    if( state.lastEvent == 0 ) {
-        s << "                   " ;
-    } else {
-        std::tm *now = localtime( &state.lastEvent ) ;
-        strftime(buf, sizeof(buf), "%Y-%m-%d %X", now ) ;
-        s << buf ;
-    }
-
-    s << " State: " << state.active
-      << " Lo-Batt " << state.low_battery
-      << " Tamper " << state.tamper
-      ;
+    s << "{ \"name\": \"state.device_name\"," 
+      << " \"active\": " << state.active
+      << " \"low_battery\": " << state.low_battery
+      << " \"tamper\": " << state.tamper
+      << " \"lastEvent\": " << state.lastEvent
+      << " }" ;
 
     return s ;    
 }
