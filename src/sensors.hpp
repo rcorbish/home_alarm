@@ -11,11 +11,13 @@ typedef struct SensorState {
     bool active ;
     bool low_battery ;
     bool tamper ;
+    time_t lastAlarm ;
     time_t lastEvent ;
     const char device_type ;
     SensorState( const std::string &name, const char type ) : 
                         device_name(name), 
                         lastEvent(0), 
+                        lastAlarm(0), 
                         device_type(type) {} ; 
 } SensorState ;
 

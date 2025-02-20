@@ -48,8 +48,9 @@ void Sensors::accept( const SensorEvent &event ) {
     if( stateItem != sensors.end() ) {
         SensorState &state = stateItem->second ;
         state.active = state.device_type=='C' ? event.contact : event.reed ;
+        state.lastEvent =  time( nullptr ) ;
         if( state.active ) {
-            state.lastEvent =  time( nullptr ) ;
+            state.lastAlarm =  state.lastEvent ;
         }
         state.low_battery = event.battery_low ;
         state.tamper = event.tamper ;
@@ -78,10 +79,11 @@ std::string Sensors::toString() const {
 
 std::ostream & operator << ( std::ostream &s, const SensorState &state ) {
 
-    s << "{ \"name\": \"" << state.device_name <<"\"," 
-      << " \"active\": " << state.active
+    s << "{ \"name\": \"" << state.device_name <<"\"" 
+      << ", \"active\": " << state.active
       << ", \"low_battery\": " << state.low_battery
       << ", \"tamper\": " << state.tamper
+      << ", \"lastAlarm\": " << state.lastAlarm
       << ", \"lastEvent\": " << state.lastEvent
       << " }" ;
 
