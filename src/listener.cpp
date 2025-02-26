@@ -10,7 +10,7 @@
 
 #define BUFFER_SIZE 1024
 
-Listener::Listener( Sensors &_sensors, const int port ) : sensors(_sensors) {
+Listener::Listener( const int port ) : sensors(Sensors::getInstance()) {
     
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {

@@ -4,6 +4,7 @@
 
 #include "radio.hpp"
 #include "listener.hpp"
+#include "signal_processor.hpp"
 
 using namespace std ;
 
@@ -17,8 +18,7 @@ void my_handler(int s) {
 	exit( 0 ) ;
 }
 
-int main(int argc, char **argv, char **envp)
-{
+int main( int argc, char **argv, char **envp ) {
 	// libusb_context *ctx ;
 	// libusb_init( &ctx );
 	// libusb_set_option( ctx, LIBUSB_OPTION_LOG_LEVEL, LIBUSB_LOG_LEVEL_WARNING);
@@ -26,12 +26,10 @@ int main(int argc, char **argv, char **envp)
 	signal( SIGINT, my_handler ) ;
 
 	try {
-		Sensors sensors ;
-
-		radio = new Radio( sensors ) ;
+		radio = Radio::getSensorInstance() ;
 		radio->start() ;
 
-		listener = new Listener( sensors ) ;
+		listener = new Listener() ;
 		listener->start() ;
 
 		std::cout << (*radio) << std::endl ;
@@ -51,3 +49,7 @@ int main(int argc, char **argv, char **envp)
 	}
 	return 0;
 }
+
+
+// template class Radio<SensorSignalProcessor> ;
+// template std::ostream & operator << ( std::ostream &s, const Radio<SensorSignalProcessor> &radio ) ;

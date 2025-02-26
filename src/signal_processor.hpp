@@ -5,6 +5,9 @@
 
 #include "decoder.hpp"
 
+constexpr const int SampleFrequency = 1000000 ;
+constexpr const int CarrierFrequency = 345000000; //344940000 ;
+
 typedef enum DSP_STATE {
     HIGH,
     LOW,
@@ -19,7 +22,7 @@ typedef enum DSP_STATE {
  * 
  */
 class SignalProcessor {
-    private:
+    protected:
         const int longPulseLength ;
         const int gapLength ;
         static constexpr int MinRealPulseLength = 10 ;
@@ -37,10 +40,10 @@ class SignalProcessor {
         uint16_t maxLow ;
         uint16_t minHigh ;
 
-        Decoder decoder ;
-    protected:
         void reset() ;
+        void convertRawDataToSignal( unsigned char *buf, uint32_t len, uint16_t *cleanedSignal ) ;
+        virtual void processSignal( uint16_t *buf, uint32_t len ) = 0 ;
     public :
-        SignalProcessor( const int _sampleFrequency, Sensors &sensors ) ;
+        SignalProcessor( const int _sampleFrequency ) ;
         void processRawBytes( unsigned char *buf, uint32_t len ) ;
 } ;

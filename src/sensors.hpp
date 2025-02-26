@@ -26,8 +26,12 @@ std::ostream & operator << ( std::ostream &s, const SensorState &state ) ;
 class Sensors {
     private:
         std::map<uint32_t, SensorState> sensors;
-    public:
         Sensors();
+    public:
+        static Sensors &getInstance() {
+            static Sensors instance ;
+            return instance ;
+        }
         void accept(const SensorEvent &event);
         std::string toString() const ;
 };

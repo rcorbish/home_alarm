@@ -41,10 +41,20 @@ find_library(LIBRTLSDR_LIBRARY
   NAMES rtlsdr
   PATH_SUFFIXES "lib64" "lib32" "lib" ) 
 
-add_executable( home_alarm src/main.cpp src/radio.cpp src/signal_processor.cpp src/decoder.cpp src/sensors.cpp src/sensor_event.cpp src/listener.cpp)
-target_include_directories( home_alarm PUBLIC ${LIBUSB_INCLUDE_DIR} ${LIBRTLSDR_INCLUDE_DIR} )
-target_link_libraries( home_alarm PRIVATE Threads::Threads )
-target_link_libraries( home_alarm PRIVATE ${LIBUSB_LIBRARY} ${LIBRTLSDR_LIBRARY} )
+set(SHARED_SOURCES
+      src/radio.cpp 
+      src/signal_processor.cpp 
+      src/sensor_signal_processor.cpp 
+      src/monitor_signal_processor.cpp 
+      src/decoder.cpp 
+      src/sensors.cpp 
+      src/sensor_event.cpp 
+      src/listener.cpp )
 
-#add_executable( test src/test.cpp src/radio.cpp src/signal_processor.cpp src/decoder.cpp src/sensor_event_receiver.cpp src/sensor_event.cpp )
-#target_link_libraries( test PRIVATE ${LIBUSB_LIBRARY} ${LIBRTLSDR_LIBRARY} )
+add_executable( home_alarm src/main.cpp ${SHARED_SOURCES})
+target_include_directories( home_alarm PUBLIC ${LIBUSB_INCLUDE_DIR} ${LIBRTLSDR_INCLUDE_DIR} )
+target_link_libraries( home_alarm PRIVATE ${LIBUSB_LIBRARY} ${LIBRTLSDR_LIBRARY} Threads::Threads )
+
+add_executable( webserver src/webserver.cpp ${SHARED_SOURCES} ${MONGOOSE_SRC}/mongoose.c )
+target_include_directories ( webserver PUBLIC ${MONGOOSE_SRC} ${LIBUSB_INCLUDE_DIR} ${LIBRTLSDR_INCLUDE_DIR} )
+target_link_libraries( webserver PRIVATE ${LIBUSB_LIBRARY} ${LIBRTLSDR_LIBRARY} Threads::Threads)

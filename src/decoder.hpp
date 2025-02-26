@@ -28,6 +28,6 @@ class Decoder {
         uint8_t mapBitsToNumber( const char *bits, const int offset ) const ;
 
     public:
-        Decoder( Sensors &_sensors ) : sensors(_sensors) {} ; 
+        Decoder() : sensors( Sensors::getInstance() ) {} ; 
         bool parse( char *bits, int len ) ;
 } ;

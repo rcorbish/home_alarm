@@ -5,18 +5,18 @@
 #include <ctime>
 #include <iomanip>
 
+
 #include "radio.hpp"
+#include "sensor_signal_processor.hpp"
+#include "monitor_signal_processor.hpp"
 
 using namespace std ;
 
 #define AMP_TO_DB(x) (10.0f * ((x) > 0 ? log10f(x) : 0) - 42.1442f)  // 10*log10f(16384.0f)
 #define MAG_TO_DB(x) (20.0f * ((x) > 0 ? log10f(x) : 0) - 84.2884f)  // 20*log10f(16384.0f)
 
+Radio::Radio( SignalProcessor *_dsp ) : threadId(0), rtlsdr_dev(0), dsp(_dsp) {
 
-constexpr int SampleFrequency = 1000000 ;
-constexpr int CarrierFrequency = 345000000; //344940000 ;
-
-Radio::Radio( Sensors &sensors ) : threadId(0), rtlsdr_dev(0), dsp( SampleFrequency, sensors ) {
     device_count = rtlsdr_get_device_count();
     if (!device_count) {
         throw "No supported devices found" ;
@@ -96,9 +96,15 @@ void Radio::listen() {
  */
 void Radio::data_ready( unsigned char *buf, uint32_t len, void *self ) {
     Radio *radio = (Radio *)self ;
-    radio->dsp.processRawBytes( buf, len ) ;
+    radio->dsp->processRawBytes( buf, len ) ;
 }
 
+Radio *Radio::getSensorInstance() {
+    return new Radio( new SensorSignalProcessor( SampleFrequency ) ) ;
+}
+Radio *Radio::getMonitoringInstance() {
+    return new Radio( new MonitoringSignalProcessor( SampleFrequency ) ) ;
+}
 
 std::ostream & operator << ( std::ostream &s, const Radio &radio ) {
     char vendor[256] ; 
@@ -117,8 +123,3 @@ std::ostream & operator << ( std::ostream &s, const Radio &radio ) {
       ;
     return s ;
 }
-
-
-
-
-
