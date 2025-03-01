@@ -20,7 +20,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable( mongoose )  
 set( MONGOOSE_SRC ${FETCHCONTENT_BASE_DIR}/mongoose-src )
 
-find_package( OpenSSL QUIET )
+find_package( OpenSSL )
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
@@ -55,6 +55,13 @@ add_executable( home_alarm src/main.cpp ${SHARED_SOURCES})
 target_include_directories( home_alarm PUBLIC ${LIBUSB_INCLUDE_DIR} ${LIBRTLSDR_INCLUDE_DIR} )
 target_link_libraries( home_alarm PRIVATE ${LIBUSB_LIBRARY} ${LIBRTLSDR_LIBRARY} Threads::Threads )
 
+
 add_executable( webserver src/webserver.cpp ${SHARED_SOURCES} ${MONGOOSE_SRC}/mongoose.c )
+if( OPENSSL_FOUND )
+    message( "Compile & link server with OpenSSL" ) 
+    target_compile_definitions(webserver PUBLIC MG_ENABLE_OPENSSL )
+    target_compile_definitions(webserver PUBLIC MG_TLS=MG_TLS_OPENSSL )
+    # target_link_libraries( webserver PRIVATE  )
+endif()
 target_include_directories ( webserver PUBLIC ${MONGOOSE_SRC} ${LIBUSB_INCLUDE_DIR} ${LIBRTLSDR_INCLUDE_DIR} )
-target_link_libraries( webserver PRIVATE ${LIBUSB_LIBRARY} ${LIBRTLSDR_LIBRARY} Threads::Threads)
+target_link_libraries( webserver PRIVATE ${LIBUSB_LIBRARY} ${LIBRTLSDR_LIBRARY} Threads::Threads ${OPENSSL_LIBRARIES})

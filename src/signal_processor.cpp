@@ -9,24 +9,26 @@
 
 using namespace std;
 
-constexpr float MinLevel = 150; // Carrier noise level
+constexpr float MinLevel = 75; // Carrier noise level
 
 template <class T>
 void LogData(T *data, size_t len);
 
-SignalProcessor::SignalProcessor(const int sampleFrequency) : longPulseLength(sampleFrequency / 6000), // uS definition of long pulse
-                                                              gapLength(sampleFrequency / 1000)        // uS definition of inter envelope gap
-{
-    noiseBackground = 1000;
-    maxLow = 750;   // max value in low signal = noise
-    minHigh = 1500; // min value in hi signal
-
-    reset();
-};
-
 #define F_SCALE 15
 #define S_CONST (1 << F_SCALE)
 #define FIX(x) ((int)(x * S_CONST))
+
+SignalProcessor::SignalProcessor(const int sampleFrequency) : longPulseLength(sampleFrequency / 6000), // uS definition of long pulse
+                                                              gapLength(sampleFrequency / 1000)        // uS definition of inter envelope gap
+{
+    relevantMeanThreshold = 750;
+    maxLow = 150;   // max value in low signal = noise
+    minHigh = 700;  // min value in hi signal
+
+    reset();
+}
+
+
 
 void SignalProcessor::convertRawDataToSignal(unsigned char *buf, uint32_t len, uint16_t *signal)
 {
@@ -71,12 +73,11 @@ void SignalProcessor::convertRawDataToSignal(unsigned char *buf, uint32_t len, u
 
 void SignalProcessor::processRawBytes(unsigned char *buf, uint32_t len)
 {
+    const int numSamples = len >> 1 ;
 
-    const int numSamples = len >> 1;
-
-    uint16_t cleanedSignal[numSamples];
-    convertRawDataToSignal(buf, len, cleanedSignal);
-    processSignal(cleanedSignal, numSamples);
+    uint16_t cleanedSignal[numSamples] ;
+    convertRawDataToSignal(buf, len, cleanedSignal) ;
+    processSignal(cleanedSignal, numSamples) ;
 }
 
 void SignalProcessor::reset()

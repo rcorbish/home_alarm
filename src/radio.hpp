@@ -26,7 +26,7 @@ protected:
     void listen() ;
 public:
     static Radio *getSensorInstance() ;
-    static Radio *getMonitoringInstance() ;
+    static Radio *getMonitoringInstance(BroadcastFunction broadcast) ;
     virtual ~Radio() ;
     int start() ;
 };

@@ -102,8 +102,8 @@ void Radio::data_ready( unsigned char *buf, uint32_t len, void *self ) {
 Radio *Radio::getSensorInstance() {
     return new Radio( new SensorSignalProcessor( SampleFrequency ) ) ;
 }
-Radio *Radio::getMonitoringInstance() {
-    return new Radio( new MonitoringSignalProcessor( SampleFrequency ) ) ;
+Radio *Radio::getMonitoringInstance( BroadcastFunction broadcast ) {
+    return new Radio( new MonitoringSignalProcessor( SampleFrequency, broadcast ) ) ;
 }
 
 std::ostream & operator << ( std::ostream &s, const Radio &radio ) {

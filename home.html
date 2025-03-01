@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'/>
+<link rel='shortcut icon' href='data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA/4QAAOvl3wDy7+sAz8a8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAARAAEQAAEQABEAARAAAAAAAAAAAAAAEQABEAARAAARAAEQABEAAAAAAAAAAABEQENENEQABEREREREQkQEI0REJENERERERCRENEREQERERDREJEAABCNEQkREAABEREREJEQAAENEBCRENAAABEQERARAAAAAAABEAAAADOcwAAznMAAP//AADnOQAA5zkAAP//AACIBwAAAAEAAAAAAAAAAAAAgAMAAMAHAACABwAAhAcAAMRPAAD+fwAA' type='image/x-icon'>
+<link rel='stylesheet' href='css.css'>
+<script>
+
+
+var socket ;
+
+
+function document_loaded() {
+   socket = new WebSocket("wss://" + location.host + "/signal");
+
+   socket.onopen = function(event) {
+      console.log("Connection opened");
+      socket.send("Hello Server!");
+   };
+
+   socket.onmessage = function(event) {
+      const jsonData = JSON.parse(event.data);
+      drawLineGraph(jsonData);
+      document.getElementById('signal_title').innerText = jsonData.mean;
+   };
+
+   socket.onclose = function(event) {
+      console.log("Connection closed");
+   };
+
+   socket.onerror = function(error) {
+      console.error("WebSocket error: ", error);
+   };
+}
+
+window.addEventListener('load', document_loaded);
+
+
+        
+function drawLineGraph(data) {
+   const canvas = document.getElementById('graphCanvas');
+   const ctx = canvas.getContext('2d');   // Clear the canvas
+   ctx.clearRect(0, 0, canvas.width, canvas.height);
+   
+   // Set dimensions
+   const padding = 40;
+   const graphWidth = canvas.width - 2 * padding;
+   const graphHeight = canvas.height - 2 * padding;
+   
+   // Find max value for scaling
+   const maxValue = 30000;//65536;
+   
+   // Draw axes
+   ctx.beginPath();
+   ctx.moveTo(padding, padding);
+   ctx.lineTo(padding, canvas.height - padding);
+   ctx.lineTo(canvas.width - padding, canvas.height - padding);
+   ctx.strokeStyle = '#000';
+   ctx.stroke();
+   
+   // Draw labels
+   ctx.font = '12px Arial';
+   ctx.fillStyle = '#000';
+   
+   // // X-axis labels
+   const xStep = graphWidth / (data.signal.length - 1);
+   for (let i = 0; i <= 20000; i+= 2100) {
+         const x = padding + (i * xStep);
+         ctx.fillText(i.toString(), x, canvas.height );
+         
+         // Grid lines (optional)
+         ctx.beginPath();
+         ctx.moveTo(x, padding);
+         ctx.lineTo(x, canvas.height - padding);
+         ctx.strokeStyle = '#ddd';
+         ctx.stroke();
+   }
+   
+   
+   // Y-axis labels
+   for (let i = 0; i <= maxValue; i+=5000) {
+         const y = canvas.height - padding - (i / maxValue * graphHeight);
+         ctx.fillText(i.toString(), padding - 25, y + 5);
+         
+         // Grid lines (optional)
+         ctx.beginPath();
+         ctx.moveTo(padding, y);
+         ctx.lineTo(canvas.width - padding, y);
+         ctx.strokeStyle = '#ddd';
+         ctx.stroke();
+   }
+   
+   // Draw the line
+   ctx.beginPath();
+   data.signal.forEach((item, index) => {
+         const x = padding + index * xStep;
+         const y = canvas.height - padding - (item / maxValue * graphHeight);
+         
+         if (index === 0) {
+            ctx.moveTo(x, y);
+         } else {
+            ctx.lineTo(x, y);
+         }
+   });
+   
+   ctx.strokeStyle = '#3498db';
+   ctx.lineWidth = 0.5;
+   ctx.stroke();
+
+   ctx.beginPath();
+   const x = padding + data.signal.length * xStep;
+   const y = canvas.height - padding - (data.mean / maxValue * graphHeight);
+   
+   ctx.moveTo(padding, y);
+   ctx.lineTo(x, y);
+   
+   ctx.strokeStyle = '#00F080';
+   ctx.lineWidth = 0.5;
+   ctx.stroke();
+
+   // // Add title
+   // ctx.font = '16px Arial';
+   // ctx.fillStyle = '#000';
+   // ctx.fillText('Monthly Values', canvas.width / 2 - 50, padding - 10);
+}
+        
+
+</script>
+
+</head>
+<body>
+
+<div id='signal_display' >
+   <div id='signal_title'>Signal</div>
+   <canvas id="graphCanvas" width="1600" height="800"></canvas>
+</div>
+
+
+</body>
+</html>

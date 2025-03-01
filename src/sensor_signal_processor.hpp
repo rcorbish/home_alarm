@@ -10,7 +10,7 @@
 class SensorSignalProcessor : public SignalProcessor {
     protected:
         Decoder decoder ;
-        virtual void processSignal( uint16_t *buf, uint32_t len ) ;
+        virtual void processSignal( const uint16_t *buf, const uint32_t len ) ;
     public :
         SensorSignalProcessor( const int _sampleFrequency) :
             SignalProcessor( _sampleFrequency ) {} ;

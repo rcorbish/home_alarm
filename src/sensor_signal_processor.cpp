@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void SensorSignalProcessor::processSignal(uint16_t *cleanedSignal, uint32_t numSamples)
+void SensorSignalProcessor::processSignal(const uint16_t *cleanedSignal, const uint32_t numSamples)
 {
     uint64_t quietSum = 0;
     for (unsigned long i = 1; i < numSamples; i++) {
@@ -20,8 +20,8 @@ void SensorSignalProcessor::processSignal(uint16_t *cleanedSignal, uint32_t numS
 
     uint16_t gapQuiet = (uint16_t)(((float)quietSum) / numSamples);
 
-    maxLow = max(500, (noiseBackground >> 1)); // 750 ;     // max value in low signal = noise
-    minHigh = noiseBackground << 1;            // 2000 ;    // min value in hi signal
+    maxLow = max(500, (relevantMeanThreshold >> 1)); // 750 ;     // max value in low signal = noise
+    minHigh = relevantMeanThreshold << 1;            // 2000 ;    // min value in hi signal
     // cout << "GAP: " << gapQuiet  << " " << noiseBackground << "   " << maxLow << "  -  " << minHigh << "\n" ;
     // LogData<unsigned char>( buf, len ) ;
 
@@ -102,7 +102,7 @@ void SensorSignalProcessor::processSignal(uint16_t *cleanedSignal, uint32_t numS
         }
     }
     if (dspState == IDLE) {
-        noiseBackground = (3 * noiseBackground + gapQuiet) >> 2;
+        relevantMeanThreshold = (3 * relevantMeanThreshold + gapQuiet) >> 2;
     }
     // if( valid ) {
     //     cout << "HI: " << ((float) hiSum ) / hiNum  << "  LO: " << ((float) loSum ) / loNum  << "\n" ;
