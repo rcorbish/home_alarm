@@ -78,10 +78,6 @@ void MonitoringSignalProcessor::processSignal(const uint16_t *cleanedSignal, con
 }
 
 
-constexpr const float T = 1e-6 ;
-constexpr const float omega = 2 * M_PI * ( 1.f / 500.f) ;  // cutoff freq in rad/sec
-
-
 void MonitoringSignalProcessor::publishPacket(const uint32_t startIndex, const uint16_t *cleanedSignal, const uint32_t numSamples) {
     auto endIndex = min( numSamples, startIndex+MaxPacketLength ) ;
     if( endIndex - startIndex < 16000 ) return ;    // Need at least this many samples for a full packet
@@ -100,15 +96,11 @@ void MonitoringSignalProcessor::publishPacket(const uint32_t startIndex, const u
     }
     auto mean = sum / 2200 ;
 
-    const auto alpha = ( 2.0 - T * omega ) / ( 2.0 + T * omega ) ;
-    const auto beta = T * omega / ( 2.0 + T * omega ) ;
-
     p = cleanedSignal + startIndex ;
     auto y = *p++ ;
+    // Implement low pass filter
     for( int i=startIndex+1 ; i<(endIndex-5) ; i++, p++) {
-        // auto median = median5FromArray( p ) ;
-        y += ( *p - y ) / 10 ;
-        //y = alpha * y + beta * (*p - y);
+        y += ( *p - y ) / 8 ;   // This number can be adjusted based on your receiver & signals
         ss << ',' << (uint16_t)y ; //median ;
     }
     if( mean > relevantMeanThreshold ) {
