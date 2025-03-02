@@ -8,7 +8,7 @@
 typedef void (*BroadcastFunction)( const char *, const int ) ;
 
 constexpr const int SampleFrequency = 1000000 ;     // sample at 1MHz
-constexpr const int CarrierFrequency = 345000000 ;  // 344940000 ; // 345MHz is the carrier frequency
+constexpr const int CarrierFrequency = 344940000;//345000000 ;  // 344940000 ; // 345MHz is the carrier frequency
 constexpr const int MaxPacketLength = 20000 ;       // 20mS = max packet length
 constexpr const int EmptySignalLength = 1000 ;      // 1mS = no high signal means end of packet
 
@@ -46,7 +46,10 @@ class SignalProcessor {
 
         void reset() ;
         void convertRawDataToSignal( unsigned char *buf, uint32_t len, uint16_t *cleanedSignal ) ;
-        virtual void processSignal( const uint16_t *buf, const uint32_t len ) = 0 ;
+        void processSignal( const uint16_t *buf, const uint32_t len ) ;
+        virtual void publishPacket(const uint32_t startIndex, const uint16_t *cleanedSignal, const uint32_t numSamples) = 0 ;
+        uint16_t median5FromArray(const uint16_t *arr ) ;
+
     public :
         SignalProcessor( const int _sampleFrequency ) ;
         void processRawBytes( unsigned char *buf, uint32_t len ) ;

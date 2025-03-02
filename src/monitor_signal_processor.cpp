@@ -78,69 +78,41 @@ void MonitoringSignalProcessor::processSignal(const uint16_t *cleanedSignal, con
 }
 
 
+constexpr const float T = 1e-6 ;
+constexpr const float omega = 2 * M_PI * ( 1.f / 500.f) ;  // cutoff freq in rad/sec
+
 
 void MonitoringSignalProcessor::publishPacket(const uint32_t startIndex, const uint16_t *cleanedSignal, const uint32_t numSamples) {
     auto endIndex = min( numSamples, startIndex+MaxPacketLength ) ;
+    if( endIndex - startIndex < 16000 ) return ;    // Need at least this many samples for a full packet
+
     stringstream ss;
-    ss << "{ \"signal\": [";
-    ss << cleanedSignal[startIndex-1] ;
+    ss << "{ \"signal\": [ 0";
+    // ss << cleanedSignal[startIndex-1] ;
     auto *p = cleanedSignal + startIndex ;
     uint32_t sum = 0 ;
-    for( int i=startIndex ; i<(endIndex-5) ; i++, p++ ) {
+
+
+    for( int i=0 ; i<2200 ; i++, p++ ) {
         auto median = median5FromArray( p ) ;
         sum += median ;
-        ss << ',' << median ;
+        // ss << ',' << median ;
     }
-    auto mean = (sum / (endIndex-startIndex-5)) ;
+    auto mean = sum / 2200 ;
+
+    const auto alpha = ( 2.0 - T * omega ) / ( 2.0 + T * omega ) ;
+    const auto beta = T * omega / ( 2.0 + T * omega ) ;
+
+    p = cleanedSignal + startIndex ;
+    auto y = *p++ ;
+    for( int i=startIndex+1 ; i<(endIndex-5) ; i++, p++) {
+        // auto median = median5FromArray( p ) ;
+        y += ( *p - y ) / 10 ;
+        //y = alpha * y + beta * (*p - y);
+        ss << ',' << (uint16_t)y ; //median ;
+    }
     if( mean > relevantMeanThreshold ) {
         ss << "], \"mean\":" << mean << "}" ;
         broadcast(ss.str().c_str(), ss.str().length());
-    }
-}
-
-uint16_t median5FromArray(const uint16_t *arr ) {
-    // We'll track min/median/max of first three elements
-    uint16_t min_abc, med_abc, max_abc;
-    
-    // Find ordering of arr[0] and arr[1] (Comparison 1)
-    if (arr[0] > arr[1]) {
-        min_abc = arr[1];
-        max_abc = arr[0];
-    } else {
-        min_abc = arr[0];
-        max_abc = arr[1];
-    }
-    
-    // Add arr[2] to the ordering (Comparisons 2-3)
-    if (arr[2] > max_abc) {
-        med_abc = max_abc;
-        max_abc = arr[2];
-    } else if (arr[2] < min_abc) {
-        med_abc = min_abc;
-        min_abc = arr[2];
-    } else {
-        med_abc = arr[2];
-    }
-    
-    // Order arr[3] and arr[4] (Comparison 4)
-    uint16_t min_de, max_de;
-    if (arr[3] > arr[4]) {
-        min_de = arr[4];
-        max_de = arr[3];
-    } else {
-        min_de = arr[3];
-        max_de = arr[4];
-    }
-    
-    // Find the median of all 5 elements (Comparisons 5-6)
-    if (med_abc > max_de) {
-        // Median is either max_de or min_abc
-        return std::max(min_abc, max_de);
-    } else if (min_de > med_abc) {
-        // Median is either min_de or max_abc
-        return std::min(min_de, max_abc);
-    } else {
-        // med_abc is the median
-        return med_abc;
     }
 }

@@ -9,7 +9,7 @@ class MonitoringSignalProcessor : public SignalProcessor {
     private:
         BroadcastFunction broadcast ;
     protected:
-        virtual void processSignal( const uint16_t *cleanedSignal, const uint32_t numSamples ) ;
+        void processSignal( const uint16_t *cleanedSignal, const uint32_t numSamples ) ;
         void publishPacket(const uint32_t startIndex, const uint16_t *cleanedSignal, const uint32_t numSamples) ;
 
     public :
