@@ -103,8 +103,8 @@ void MonitoringSignalProcessor::publishPacket(const uint32_t startIndex, const u
         y += ( *p - y ) / 8 ;   // This number can be adjusted based on your receiver & signals
         ss << ',' << (uint16_t)y ; //median ;
     }
-    if( mean > relevantMeanThreshold ) {
+    // if( mean > relevantMeanThreshold ) {
         ss << "], \"mean\":" << mean << "}" ;
         broadcast(ss.str().c_str(), ss.str().length());
-    }
+    // }
 }
