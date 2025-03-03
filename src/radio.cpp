@@ -41,6 +41,7 @@ Radio::Radio( SignalProcessor *_dsp ) : threadId(0), rtlsdr_dev(0), dsp(_dsp) {
 Radio::~Radio() {
     if( threadId ) {
         rtlsdr_cancel_async( rtlsdr_dev ) ;
+        rtlsdr_reset_buffer( rtlsdr_dev ) ;
         pthread_join( threadId, nullptr ) ;
         threadId = 0 ;
     }
@@ -55,6 +56,7 @@ Radio::~Radio() {
  * @return int 
  */
 int Radio::start() {
+    rtlsdr_reset_buffer( rtlsdr_dev ) ;
     pthread_create( &threadId, nullptr, Radio::startListening, this ) ;
     return 0 ;
 }
