@@ -139,6 +139,7 @@ void SignalProcessor::processSignal(const uint16_t *cleanedSignal, const uint32_
                         startIndex = 0 ;
                         wrongBitLength = 0 ;
                         dspState = IDLE ;
+                        bitLength = 0 ;
                     }
                     bitLength++;
                     wrongBitLength = 0;
