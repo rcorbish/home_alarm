@@ -109,6 +109,11 @@ void SignalProcessor::processSignal(const uint16_t *cleanedSignal, const uint32_
         sum += cleanedSignal[i] ;
     }
     cout << "Total = " << sum << " Mean = " << sum / numSamples << endl ;
+    sum = 0 ;
+    for (int i = 0; i < 1000 ; i++) {
+        sum += cleanedSignal[i] ;
+    }
+    cout << "Ttl 2 = " << sum << " Mean = " << sum / 1000 << endl ;
     return ;
 
     for (int i = 0; i < numSamples; i++) {
