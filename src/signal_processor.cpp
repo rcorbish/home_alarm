@@ -130,7 +130,7 @@ void SignalProcessor::processSignal(const uint16_t *cleanedSignal, const uint32_
                 auto bit = cleanedSignal[i] > minHigh ;
 
                 if (!bit) {
-                    if( bitLength > EmptySignalLength ) {
+                    if( startIndex > 0 && bitLength > EmptySignalLength ) {
                         cout << "Packet len " << packetLength << " bit length " << bitLength << endl;
                         if( packetLength >= MaxPacketLength && startIndex > 0 ) {
                             publishPacket( startIndex, cleanedSignal, numSamples ) ;
