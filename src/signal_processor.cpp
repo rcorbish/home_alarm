@@ -214,6 +214,9 @@ void LogData(const T *data, const size_t len)
             break ;
         }
     }
+    if( i == len ) {
+        return ;
+    }
     
     ofstream dataFile("signal.csv") ;
     for (; i < len; i++) {
