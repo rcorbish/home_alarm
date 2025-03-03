@@ -61,7 +61,6 @@ int Radio::start() {
     return 0 ;
 }
 
-
 /**
  * @brief Thread that begins receiving IQ data
  * 
@@ -83,9 +82,9 @@ void Radio::listen() {
     int rc = rtlsdr_read_async( rtlsdr_dev, Radio::data_ready, this, 2, 65536 ) ;
     if( rc<0 ) {
         std::cerr << "Check your RTL-SDR dongle, USB cables, and power supply" 
-       //             << libusb_error_name(rc) << "\n" 
+        //            << libusb_error_name(rc) << "\n" 
         //            << libusb_strerror(rc)  << std::endl 
-	;
+	    ;
     }
 }
 
@@ -98,7 +97,7 @@ void Radio::listen() {
  */
 void Radio::data_ready( unsigned char *buf, uint32_t len, void *self ) {
     Radio *radio = (Radio *)self ;
-    radio->dsp->processRawBytes( buf, len ) ;
+    // radio->dsp->processRawBytes( buf, len ) ;
 }
 
 Radio *Radio::getSensorInstance() {
