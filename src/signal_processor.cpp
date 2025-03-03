@@ -208,13 +208,15 @@ uint16_t SignalProcessor::median5FromArray(const uint16_t *arr ) {
 template <class T>
 void LogData(const T *data, const size_t len)
 {
-    ofstream dataFile("signal.csv");
-    bool isFirstNonZero = false ;
-    for (int i = 0; i < len; i++) {
-        if( *data == 0 && !isFirstNonZero ) {
-            continue ;
+    int i ;
+    for (i = 0; i < len; i++) {
+        if( *data != 0 ) {
+            break ;
         }
-        isFirstNonZero = true ;
+    }
+    
+    ofstream dataFile("signal.csv") ;
+    for (; i < len; i++) {
         if ((i & 31) == 0)
             dataFile << "\n"
                      << setw(8) << hex << uppercase << i << ":  ";
