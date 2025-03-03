@@ -91,7 +91,6 @@ void SignalProcessor::reset()
 
 void SignalProcessor::processSignal(const uint16_t *cleanedSignal, const uint32_t numSamples)
 {
-    cout << "Process " << numSamples << " samples\n";
     LogData<uint16_t>(cleanedSignal, numSamples);
 
     uint32_t startIndex = 0 ;
@@ -133,6 +132,7 @@ void SignalProcessor::processSignal(const uint16_t *cleanedSignal, const uint32_
                 if (!bit) {
                     if( bitLength > EmptySignalLength ) {
                         if( packetLength >= MaxPacketLength && startIndex > 0 ) {
+                            cout << "Publishing packet" << endl;
                             publishPacket( startIndex, cleanedSignal, numSamples ) ;
                         }
                         packetLength = 0 ;
@@ -217,7 +217,7 @@ void LogData(const T *data, const size_t len)
     if( i == len ) {
         return ;
     }
-    
+
     ofstream dataFile("signal.csv") ;
     for (; i < len; i++) {
         if ((i & 31) == 0)
