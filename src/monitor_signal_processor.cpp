@@ -5,6 +5,11 @@
 #include <ctime>
 #include <iomanip>
 #include <fstream>
+#include <format>
+#include <string>
+#include <ranges>
+#include <span>
+
 #include "monitor_signal_processor.hpp"
 
 using namespace std;
@@ -79,32 +84,39 @@ void MonitoringSignalProcessor::processSignal(const uint16_t *cleanedSignal, con
 
 
 void MonitoringSignalProcessor::publishPacket(const uint32_t startIndex, const uint16_t *cleanedSignal, const uint32_t numSamples) {
+    // Estimate needed capacity
+    constexpr size_t avgDigitsPerElement = 4;  // Adjust based on expected element size
+    constexpr size_t separatorSize = 1;        // Space between elements
+
     auto endIndex = min( numSamples, startIndex+MaxPacketLength ) ;
     if( endIndex - startIndex < 16000 ) return ;    // Need at least this many samples for a full packet
 
-    stringstream ss;
-    ss << "{ \"signal\": [ 0";
-    // ss << cleanedSignal[startIndex-1] ;
     auto *p = cleanedSignal + startIndex ;
+
     uint32_t sum = 0 ;
-
-
     for( int i=0 ; i<2200 ; i++, p++ ) {
         auto median = median5FromArray( p ) ;
         sum += median ;
-        // ss << ',' << median ;
     }
     auto mean = sum / 2200 ;
 
     p = cleanedSignal + startIndex ;
+    auto sz = endIndex - startIndex ;
+    // Create a string with reserved capacity
+    std::string result;
+    result.reserve(sz * (avgDigitsPerElement + separatorSize) + 256);
+    std::span<const uint16_t> span(p, sz);
+
+    std::format_to(std::back_inserter(result), "{{ \"signal\": [ 0" );
+
     auto y = *p++ ;
     // Implement low pass filter
     for( int i=startIndex+1 ; i<(endIndex-5) ; i++, p++) {
         y += ( *p - y ) / 8 ;   // This number can be adjusted based on your receiver & signals
-        ss << ',' << (uint16_t)y ; //median ;
+        std::format_to(std::back_inserter(result), ",{}", (uint16_t)y);
     }
     if( mean > relevantMeanThreshold ) {
-        ss << "], \"mean\":" << mean << "}" ;
-        broadcast(ss.str().c_str(), ss.str().length());
+        std::format_to(std::back_inserter(result), "], \"mean\": {} }}", (uint16_t)mean);
+        broadcast(result.data(), result.length());
     }
 }
