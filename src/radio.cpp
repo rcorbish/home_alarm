@@ -97,7 +97,7 @@ void Radio::listen() {
  */
 void Radio::data_ready( unsigned char *buf, uint32_t len, void *self ) {
     Radio *radio = (Radio *)self ;
-    // radio->dsp->processRawBytes( buf, len ) ;
+    radio->dsp->processRawBytes( buf, len ) ;
 }
 
 Radio *Radio::getSensorInstance() {

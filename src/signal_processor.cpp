@@ -77,7 +77,7 @@ void SignalProcessor::processRawBytes(unsigned char *buf, uint32_t len)
 
     uint16_t cleanedSignal[numSamples] ;
     convertRawDataToSignal(buf, len, cleanedSignal) ;
-    processSignal(cleanedSignal, numSamples) ;
+    // processSignal(cleanedSignal, numSamples) ;
 }
 
 void SignalProcessor::reset()
