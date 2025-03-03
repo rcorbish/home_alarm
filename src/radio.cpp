@@ -80,7 +80,7 @@ void *Radio::startListening( void *self ) {
  * 
  */
 void Radio::listen() {
-    int rc = rtlsdr_read_async( rtlsdr_dev, Radio::data_ready, this, 2, 0 ) ;
+    int rc = rtlsdr_read_async( rtlsdr_dev, Radio::data_ready, this, 2, 65536 ) ;
     if( rc<0 ) {
         std::cerr << "Check your RTL-SDR dongle, USB cables, and power supply" 
        //             << libusb_error_name(rc) << "\n" 
