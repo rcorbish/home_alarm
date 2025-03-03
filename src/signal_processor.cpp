@@ -91,6 +91,8 @@ void SignalProcessor::reset()
 
 void SignalProcessor::processSignal(const uint16_t *cleanedSignal, const uint32_t numSamples)
 {
+    cout << "Process " << numSamples << " samples\n";
+    
     uint32_t startIndex = 0 ;
     uint32_t endIndex = numSamples ;
     auto dspState = IDLE;
@@ -129,9 +131,9 @@ void SignalProcessor::processSignal(const uint16_t *cleanedSignal, const uint32_
 
                 if (!bit) {
                     if( bitLength > EmptySignalLength ) {
-                        //if( packetLength >= MaxPacketLength && startIndex > 0 ) {
+                        if( packetLength >= MaxPacketLength && startIndex > 0 ) {
                             publishPacket( startIndex, cleanedSignal, numSamples ) ;
-                        //}
+                        }
                         packetLength = 0 ;
                         startIndex = 0 ;
                         wrongBitLength = 0 ;
