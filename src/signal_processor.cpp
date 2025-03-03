@@ -141,6 +141,7 @@ void SignalProcessor::processSignal(const uint16_t *cleanedSignal, const uint32_
                         wrongBitLength = 0 ;
                         dspState = IDLE ;
                         bitLength = 0 ;
+                        cout << "Pkt length " << packetLength << " bit length " << bitLength << " start IX " << startIndex << endl;
                     }
                     bitLength++;
                     wrongBitLength = 0;
