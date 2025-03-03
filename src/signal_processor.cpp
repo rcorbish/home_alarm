@@ -92,7 +92,7 @@ void SignalProcessor::reset()
 void SignalProcessor::processSignal(const uint16_t *cleanedSignal, const uint32_t numSamples)
 {
     cout << "Process " << numSamples << " samples\n";
-    LogData<uint16_t>(cleanedSignal, 100);
+    LogData<uint16_t>(cleanedSignal, numSamples);
 
     uint32_t startIndex = 0 ;
     uint32_t endIndex = numSamples ;
