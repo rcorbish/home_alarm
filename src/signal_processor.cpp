@@ -12,7 +12,7 @@ using namespace std;
 constexpr float MinLevel = 75; // Carrier noise level
 
 template <class T>
-void LogData(T *data, size_t len);
+void LogData(const T *data, const size_t len);
 
 #define F_SCALE 15
 #define S_CONST (1 << F_SCALE)
@@ -92,7 +92,8 @@ void SignalProcessor::reset()
 void SignalProcessor::processSignal(const uint16_t *cleanedSignal, const uint32_t numSamples)
 {
     cout << "Process " << numSamples << " samples\n";
-    
+    LogData<uint16_t>(cleanedSignal, 100);
+
     uint32_t startIndex = 0 ;
     uint32_t endIndex = numSamples ;
     auto dspState = IDLE;
@@ -205,7 +206,7 @@ uint16_t SignalProcessor::median5FromArray(const uint16_t *arr ) {
 }
 
 template <class T>
-void LogData(T *data, size_t len)
+void LogData(const T *data, const size_t len)
 {
     ofstream dataFile("signal.csv");
     for (int i = 0; i < len; i++) {
@@ -218,3 +219,5 @@ void LogData(T *data, size_t len)
     dataFile.flush();
     dataFile.close();
 }
+
+template <uint16_t> void LogData(const uint16_t *data, const size_t len) ;
