@@ -129,9 +129,9 @@ void SignalProcessor::processSignal(const uint16_t *cleanedSignal, const uint32_
 
                 if (!bit) {
                     if( bitLength > EmptySignalLength ) {
-                        if( packetLength >= MaxPacketLength && startIndex > 0 ) {
+                        //if( packetLength >= MaxPacketLength && startIndex > 0 ) {
                             publishPacket( startIndex, cleanedSignal, numSamples ) ;
-                        }
+                        //}
                         packetLength = 0 ;
                         startIndex = 0 ;
                         wrongBitLength = 0 ;
