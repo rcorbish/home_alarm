@@ -2,6 +2,7 @@
 #include <math.h>
 #include <libusb-1.0/libusb.h>
 #include <cstring>
+#include <cstdlib>
 #include <ctime>
 #include <iomanip>
 #include <fstream>
@@ -99,24 +100,20 @@ void MonitoringSignalProcessor::publishPacket(const uint32_t startIndex, const u
         sum += median ;
     }
     auto mean = sum / 2200 ;
-
-    p = cleanedSignal + startIndex ;
-    auto sz = endIndex - startIndex ;
-    // Create a string with reserved capacity
-    std::string result;
-    result.reserve(sz * (avgDigitsPerElement + separatorSize) + 256);
-    std::span<const uint16_t> span(p, sz);
-
-    std::format_to(std::back_inserter(result), "{{ \"signal\": [ 0" );
-
-    auto y = *p++ ;
-    // Implement low pass filter
-    for( int i=startIndex+1 ; i<(endIndex-5) ; i++, p++) {
-        y += ( *p - y ) / 8 ;   // This number can be adjusted based on your receiver & signals
-        std::format_to(std::back_inserter(result), ",{}", (uint16_t)y);
-    }
     if( mean > relevantMeanThreshold ) {
-        std::format_to(std::back_inserter(result), "], \"mean\": {} }}", (uint16_t)mean);
-        broadcast(result.data(), result.length());
+        p = cleanedSignal + startIndex ;
+        auto sz = endIndex - startIndex ;
+
+        char result[sz * (avgDigitsPerElement + separatorSize) + 256];
+        char *r = result + sprintf( result, "{ \"signal\": [ 0" );
+
+        auto y = *p++ ;
+        // Implement low pass filter
+        for( int i=startIndex+1 ; i<(endIndex-5) ; i++, p++) {
+            y += ( *p - y ) / 8 ;   // This number can be adjusted based on your receiver & signals
+            r += sprintf(r, ",%d", y);
+        }
+        r += sprintf( r, "], \"mean\": %d }", (uint16_t)mean);
+        broadcast(result, r-result);
     }
 }
