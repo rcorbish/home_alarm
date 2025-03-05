@@ -1,8 +1,4 @@
 
-#include <math.h>
-#include <libusb-1.0/libusb.h>
-#include <cstring>
-#include <ctime>
 #include <iomanip>
 #include <fstream>
 #include "signal_processor.hpp"

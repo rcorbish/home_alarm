@@ -1,10 +1,11 @@
 
 #include <iostream>
 #include <string>
-#include <cstring>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <pthread.h>  // Added for pthread_create and pthread_t
+
 
 #include "listener.hpp"
 

@@ -1,12 +1,10 @@
 
 #pragma once 
 
-#include <iostream>
 #include <pthread.h>
 #include <rtl-sdr.h>
 
 #include "signal_processor.hpp"
-
 
 class Radio {
 private:

@@ -1,14 +1,10 @@
 
-#include <ctime>
 #include <sstream>
 #include <fstream>
-#include <string.h>
 
 #include "sensors.hpp"
 
 using namespace std ;
-
-
 
 Sensors::Sensors() {
     ifstream sensorNames( "sensors.txt" ) ;

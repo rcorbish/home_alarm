@@ -1,8 +1,6 @@
 
-#include <math.h>
-#include <libusb-1.0/libusb.h>
+
 #include <cstring>
-#include <iomanip>
 #include <map>
 
 #include "decoder.hpp"

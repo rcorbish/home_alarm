@@ -1,10 +1,5 @@
 
-#include <math.h>
-#include <libusb-1.0/libusb.h>
-#include <cstring>
-#include <ctime>
-#include <iomanip>
-#include <fstream>
+
 #include "sensor_signal_processor.hpp"
 
 using namespace std;

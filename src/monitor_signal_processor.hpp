@@ -1,9 +1,7 @@
 
 #pragma once 
 
-#include <iostream>
 #include "signal_processor.hpp"
-
 
 class MonitoringSignalProcessor : public SignalProcessor {
     private:

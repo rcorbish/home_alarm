@@ -1,8 +1,6 @@
 
 #pragma once 
 
-#include <iostream>
-
 #include "decoder.hpp"
 
 typedef void (*BroadcastFunction)( const char *, const int ) ;

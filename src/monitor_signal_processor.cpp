@@ -1,14 +1,4 @@
 
-#include <math.h>
-#include <libusb-1.0/libusb.h>
-#include <cstring>
-#include <cstdlib>
-#include <ctime>
-#include <iomanip>
-#include <fstream>
-#include <string>
-#include <ranges>
-#include <span>
 
 #include "monitor_signal_processor.hpp"
 
