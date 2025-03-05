@@ -56,7 +56,7 @@ void Sensors::accept( const SensorEvent &event ) {
         state.tamper = event.tamper ;
 
         // cout << state << "\n" ;
-        cout << toString() << endl ;
+        cout << state.device_name << endl ;
     } else {
 //        cerr << event << "\n" ;
     }
