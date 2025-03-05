@@ -95,14 +95,14 @@ void* Listener::receiver_loop( void *arg ) {
         
         // Read client request
         int valread = read(new_socket, buffer, BUFFER_SIZE);
-        std::cout << "Received request: " << buffer << std::endl;
+        // std::cout << "Received request: " << buffer << std::endl;
         
         // Process request (simple echo in this example)
         auto response = self->sensors.toString();
         
         // Send response back to client
         send(new_socket, response.c_str(), response.length(), 0);
-        std::cout << "Response sent" << std::endl;
+        // std::cout << "Response sent" << std::endl;
         
         // Close connection
         close(new_socket);
