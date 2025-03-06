@@ -65,3 +65,7 @@ if( OPENSSL_FOUND )
 endif()
 target_include_directories ( webserver PUBLIC ${MONGOOSE_SRC} ${LIBUSB_INCLUDE_DIR} ${LIBRTLSDR_INCLUDE_DIR} )
 target_link_libraries( webserver PRIVATE ${LIBUSB_LIBRARY} ${LIBRTLSDR_LIBRARY} Threads::Threads ${OPENSSL_LIBRARIES})
+
+add_executable( filter src/filter.cpp  src/sensors.cpp src/listener.cpp)
+target_include_directories ( filter PUBLIC )
+target_link_libraries( filter PRIVATE Threads::Threads )
