@@ -40,7 +40,7 @@ int main( int argc, char **argv, char **envp ) {
 				.battery_low = tokens[1] == "0",
 				.heartbeat = tokens[7] == "1"
 			};
-
+			cout << event << endl ;
 			listener->acceptEvent(event);
 		}
 
