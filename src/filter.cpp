@@ -32,9 +32,8 @@ int main( int argc, char **argv, char **envp ) {
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
 		while (getline(cin, line)) {
+			auto tokens = split(line, ',');
 			cout << line << endl ;
-
-			// auto tokens = split(line, ',');
 			// SensorEvent event {
 			// 	.device_id = (uint32_t)stol(tokens[0]),
 			// 	.contact = tokens[4] == "1",
