@@ -3,6 +3,7 @@
 #include <signal.h>
 #include <string>
 #include <vector>
+#include <limits>
 
 #include "radio.hpp"
 #include "listener.hpp"
@@ -28,6 +29,7 @@ int main( int argc, char **argv, char **envp ) {
 		listener = new Listener() ;
 		listener->start() ;
 		string line;
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
 		while (getline(cin, line)) {
 			auto tokens = split(line, ',');
