@@ -32,18 +32,20 @@ int main( int argc, char **argv, char **envp ) {
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
 		while (getline(cin, line)) {
-			auto tokens = split(line, ',');
-			SensorEvent event {
-				.device_id = (uint32_t)stol(tokens[0]),
-				.contact = tokens[4] == "1",
-				.tamper = tokens[3] == "1",
-				.reed = tokens[5] == "1",
-				.alarm = tokens[6] == "1",
-				.battery_low = tokens[1] == "0",
-				.heartbeat = tokens[7] == "1"
-			};
+			cout << line << endl ;
+
+			// auto tokens = split(line, ',');
+			// SensorEvent event {
+			// 	.device_id = (uint32_t)stol(tokens[0]),
+			// 	.contact = tokens[4] == "1",
+			// 	.tamper = tokens[3] == "1",
+			// 	.reed = tokens[5] == "1",
+			// 	.alarm = tokens[6] == "1",
+			// 	.battery_low = tokens[1] == "0",
+			// 	.heartbeat = tokens[7] == "1"
+			// };
+			// listener->acceptEvent(event);
 			cout << event.device_id << endl ;
-			listener->acceptEvent(event);
 		}
 
 	} catch ( const char *ex ) {
