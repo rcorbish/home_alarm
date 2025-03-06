@@ -5,7 +5,6 @@
 #include <iostream>
 
 typedef struct SensorEvent {
-    std::uint8_t channel    ;
     std::uint32_t device_id ;
 
     bool contact     ;

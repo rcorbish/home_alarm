@@ -8,7 +8,6 @@ std::ostream & operator << ( std::ostream &s, const SensorEvent &ev ) {
     << std::hex
     << " Device " << ev.device_id
     << std::dec
-    << " Channel " << (int16_t)ev.channel
     << "\tReed " << ev.reed
     << " Contact " << ev.contact
     << " Hbeat "     << ev.heartbeat

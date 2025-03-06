@@ -55,7 +55,6 @@ bool Decoder::parse( char *bits, int len ) {
         if( calculatedCrc == crc ) {
             memcpy( previousBits, bits, 128 ) ;
             SensorEvent ev { 
-                .channel     = channel ,
                 .device_id   = device_id ,
                 .contact     = (data[3] & 0x80) != 0 , 
                 .tamper      = (data[3] & 0x40) != 0 , 

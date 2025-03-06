@@ -16,4 +16,10 @@ class Listener {
     public:
         Listener( const int port = DEFAULT_PORT) ;
         void start() ;
+        void acceptEvent( const SensorEvent &event ) {
+            sensors.accept( event ) ;
+        }
+        ~Listener() {
+            close( server_fd ) ;
+        }
 } ;
