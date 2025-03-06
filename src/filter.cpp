@@ -45,7 +45,7 @@ int main( int argc, char **argv, char **envp ) {
 			// 	.heartbeat = tokens[7] == "1"
 			// };
 			// listener->acceptEvent(event);
-			cout << event.device_id << endl ;
+			// cout << event.device_id << endl ;
 		}
 
 	} catch ( const char *ex ) {
