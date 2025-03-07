@@ -41,17 +41,21 @@ int main( int argc, char **argv, char **envp ) {
 				cerr << "Too few fields: " << line << endl ;
 				continue ;
 			}
-			SensorEvent event {
-				.device_id = (uint32_t)stol(tokens[0]),
-				.contact = tokens[4] == "1",
-				.tamper = tokens[3] == "1",
-				.reed = tokens[5] == "1",
-				.alarm = tokens[6] == "1",
-				.battery_low = tokens[1] == "0",
-				.heartbeat = tokens[7] == "1"
-			};
-			listener->acceptEvent(event);
-			cout << event.device_id << endl ;
+			try {
+				SensorEvent event {
+					.device_id = (uint32_t)stol(tokens[0]),
+					.contact = tokens[4] == "1",
+					.tamper = tokens[3] == "1",
+					.reed = tokens[5] == "1",
+					.alarm = tokens[6] == "1",
+					.battery_low = tokens[1] == "0",
+					.heartbeat = tokens[7] == "1"
+				};
+				listener->acceptEvent(event);
+				cout << event.device_id << endl ;
+			} catch (const invalid_argument& e) {
+				cerr << "Invalid argument: " << e.what() << endl ;
+			}
 		}
 
 	} catch ( const char *ex ) {
