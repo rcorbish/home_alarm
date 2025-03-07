@@ -33,7 +33,7 @@ int main( int argc, char **argv, char **envp ) {
 
 		while (getline(cin, line)) {
 			auto tokens = split(line, ',');
-			cout << line << endl ;
+			// cout << line << endl ;
 			if( line[0] == 'i' && line[1] == 'd' ) {		// skip headers
 				continue ;
 			}
@@ -52,7 +52,7 @@ int main( int argc, char **argv, char **envp ) {
 					.heartbeat = tokens[7] == "1"
 				};
 				listener->acceptEvent(event);
-				cout << event.device_id << endl ;
+				// cout << event.device_id << endl ;
 			} catch (const invalid_argument& e) {
 				cerr << "Invalid argument: " << e.what() << endl ;
 			}
