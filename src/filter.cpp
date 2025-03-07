@@ -37,8 +37,9 @@ int main( int argc, char **argv, char **envp ) {
 			if( line[0] == 'i' && line[1] == 'd' ) {		// skip headers
 				continue ;
 			}
-			if (tokens.size() < 8) {	// minimum number of fields
-				throw "Invalid input" ;
+			if (tokens.size() < 8) {	
+				cerr << "Too few fields: " << line << endl ;
+				continue ;
 			}
 			SensorEvent event {
 				.device_id = (uint32_t)stol(tokens[0]),
