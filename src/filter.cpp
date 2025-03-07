@@ -34,6 +34,12 @@ int main( int argc, char **argv, char **envp ) {
 		while (getline(cin, line)) {
 			auto tokens = split(line, ',');
 			cout << line << endl ;
+			if( line[0] == 'i' && line[1] == 'd' ) {		// skip headers
+				continue ;
+			}
+			if (tokens.size() < 8) {	// minimum number of fields
+				throw "Invalid input" ;
+			}
 			SensorEvent event {
 				.device_id = (uint32_t)stol(tokens[0]),
 				.contact = tokens[4] == "1",
